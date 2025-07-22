@@ -1,21 +1,10 @@
-/**
- * 
- * @employSchema
- * @eventListeners
- * @sensibleDefaults
- * @svgSrc
- * @documentation
- * @documentationApi
- * @iconUniformNames
- * @minimizeProperties
- * @objectifyEventListeners
- * @parentElementSelector
- * @distinctEventListeners
- * @propertiesElemUnderscore
- * @propertify
- * @propertyNamingConventions
- * @methodNamingConventions
- */
+var NavMenuIcons = {
+    'mobileHide':  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs/><path d='M23 20.2L14.8 12 23 3.8 20.2 1 12 9.2 3.8 1 1 3.8 9.2 12 1 20.2 3.8 23l8.2-8.2 8.2 8.2z'/></svg>",
+    'hamburger':   "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M24 6H0V2h24v4zm0 4H0v4h24v-4zm0 8H0v4h24v-4z'/></svg>",
+    'themeSystem': "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10V2zm0-2C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0z'/></svg>",
+    'themeLight':  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4.07 13H0v-2h4.07a8.05 8.05 0 0 0 0 2zM7.1 5.69 4.22 2.8 2.81 4.22 5.69 7.1c.41-.53.88-1 1.41-1.41zM18.31 7.1l2.88-2.88-1.41-1.41-2.88 2.88c.53.4 1 .88 1.41 1.41zM12 4c.34 0 .67.03 1 .07V0h-2v4.07c.33-.04.66-.07 1-.07zm0 16c-.34 0-.67-.03-1-.07V24h2v-4.07c-.33.04-.66.07-1 .07zm7.93-9a8.05 8.05 0 0 1 0 2H24v-2h-4.07zm-3.03 7.31 2.88 2.88 1.41-1.41-2.88-2.88c-.4.53-.88 1-1.41 1.41zM5.69 16.9 2.8 19.78l1.41 1.41 2.88-2.88c-.53-.41-1-.88-1.41-1.41zM12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12z'/></svg>",
+    'themeDark':   "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 11a4.51 4.51 0 0 1 3 3 4.52 4.52 0 0 1 3-3 4.52 4.52 0 0 1-3-3 4.5 4.5 0 0 1-3 3zm8 0c.96.3 1.7 1.04 2 2a3 3 0 0 1 2-2 3.01 3.01 0 0 1-2-2c-.3.96-1.04 1.7-2 2zm-1-9a4.51 4.51 0 0 1-3 3 4.52 4.52 0 0 1 3 3 4.51 4.51 0 0 1 3-3 4.52 4.52 0 0 1-3-3zm-7 22a12.01 12.01 0 0 1 0-24c1.9 0 3.63.5 5.37 1.18C14.42 1.68 8 4.45 8 12c0 7.45 5.92 10.2 9.37 10.82-1.5.85-3.48 1.18-5.37 1.18z'/></svg>"
+};
 
 
 
@@ -60,31 +49,31 @@ function NavMenu( schema ) {
      * 
      * @private
      */
-    this._mobileHideIconSrc = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs/><path d='M23 20.2L14.8 12 23 3.8 20.2 1 12 9.2 3.8 1 1 3.8 9.2 12 1 20.2 3.8 23l8.2-8.2 8.2 8.2z'/></svg>";
+    this._mobileHideIconSrc = NavMenuIcons[ 'mobileHide' ];
 
     /**
      * 
      * @private
      */
-    this._hamburgerIconSrc = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M24 6H0V2h24v4zm0 4H0v4h24v-4zm0 8H0v4h24v-4z'/></svg>";
+    this._hamburgerIconSrc = NavMenuIcons[ 'hamburger' ];
 
     /**
      * 
      * @private
      */
-    this._svgThemeSystem = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10V2zm0-2C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0z'/></svg>";
+    this._svgThemeSystem = NavMenuIcons[ 'themeSystem' ];
 
     /**
      * 
      * @private
      */
-    this._svgThemeLight = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4.07 13H0v-2h4.07a8.05 8.05 0 0 0 0 2zM7.1 5.69 4.22 2.8 2.81 4.22 5.69 7.1c.41-.53.88-1 1.41-1.41zM18.31 7.1l2.88-2.88-1.41-1.41-2.88 2.88c.53.4 1 .88 1.41 1.41zM12 4c.34 0 .67.03 1 .07V0h-2v4.07c.33-.04.66-.07 1-.07zm0 16c-.34 0-.67-.03-1-.07V24h2v-4.07c-.33.04-.66.07-1 .07zm7.93-9a8.05 8.05 0 0 1 0 2H24v-2h-4.07zm-3.03 7.31 2.88 2.88 1.41-1.41-2.88-2.88c-.4.53-.88 1-1.41 1.41zM5.69 16.9 2.8 19.78l1.41 1.41 2.88-2.88c-.53-.41-1-.88-1.41-1.41zM12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12z'/></svg>";
+    this._svgThemeLight = NavMenuIcons[ 'themeLight' ];
 
     /**
      * 
      * @private
      */
-    this._svgThemeDark = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 11a4.51 4.51 0 0 1 3 3 4.52 4.52 0 0 1 3-3 4.52 4.52 0 0 1-3-3 4.5 4.5 0 0 1-3 3zm8 0c.96.3 1.7 1.04 2 2a3 3 0 0 1 2-2 3.01 3.01 0 0 1-2-2c-.3.96-1.04 1.7-2 2zm-1-9a4.51 4.51 0 0 1-3 3 4.52 4.52 0 0 1 3 3 4.51 4.51 0 0 1 3-3 4.52 4.52 0 0 1-3-3zm-7 22a12.01 12.01 0 0 1 0-24c1.9 0 3.63.5 5.37 1.18C14.42 1.68 8 4.45 8 12c0 7.45 5.92 10.2 9.37 10.82-1.5.85-3.48 1.18-5.37 1.18z'/></svg>";
+    this._svgThemeDark = NavMenuIcons[ 'themeDark' ];
 
     /**
      * 
