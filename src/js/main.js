@@ -107,7 +107,8 @@ function NavMenu( schema ) {
 
     if ( schema.hasOwnProperty( 'header' ) ) {
 
-        var headerElem = document.createElement( 'DIV' );
+        var headerElem = document.createElement( 'A' );
+        headerElem.setAttribute( 'href', '/' );
         headerElem.classList.add( 'unitLogo' );
         this._navElem.appendChild( headerElem );
 
