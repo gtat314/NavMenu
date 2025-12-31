@@ -397,6 +397,16 @@ nav h1 {
 	transition-duration: var(--theme-transitionDuration, 0.15s);
 }
 
+nav h2 {
+	color: var(--theme-mainFont, rgb(0, 0, 0));
+	padding-left: 1rem;
+	white-space: nowrap;
+	transition-property: color;
+	transition-duration: var(--theme-transitionDuration, 0.15s);
+	font-weight: 400;
+	font-size: 0.8rem;
+}
+
 nav.visible h1 {
 	padding-left: 0.5rem;
 }

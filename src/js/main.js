@@ -16,6 +16,7 @@ var NavMenuIcons = {
  * @param {Object}                  [schema.header]
  * @param {URL}                      schema.header.logo
  * @param {String}                   schema.header.title
+ * @param {String}                  [schema.header.subtitle]
  * @param {Object[]}                [schema.blocks]
  * @param {'link'|'header'}          schema.blocks[].type
  * @param {String}                   schema.blocks[].text
@@ -116,9 +117,21 @@ function NavMenu( schema ) {
         this._logoImageElem.src = schema.header.logo;
         headerElem.appendChild( this._logoImageElem );
 
+        var logoTextBlockElem = document.createElement( 'DIV' );
+        logoTextBlockElem.classList.add( 'block' );
+        headerElem.appendChild( logoTextBlockElem );
+
         this._logoTitleElem = document.createElement( 'H1' );
         this._logoTitleElem.textContent = schema.header.title;
-        headerElem.appendChild( this._logoTitleElem );
+        logoTextBlockElem.appendChild( this._logoTitleElem );
+
+        if ( schema.header.hasOwnProperty( 'subtitle' ) ) {
+
+            var logoSubtitleElem = document.createElement( 'H2' );
+            logoSubtitleElem.textContent = schema.header.subtitle;
+            logoTextBlockElem.appendChild( logoSubtitleElem );
+
+        }
 
     }
 
