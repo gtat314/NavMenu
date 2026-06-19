@@ -1,4 +1,4 @@
-var NavMenuIcons = {
+const NavMenuIcons = {
     'mobileHide':  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><defs/><path d='M23 20.2L14.8 12 23 3.8 20.2 1 12 9.2 3.8 1 1 3.8 9.2 12 1 20.2 3.8 23l8.2-8.2 8.2 8.2z'/></svg>",
     'hamburger':   "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M24 6H0V2h24v4zm0 4H0v4h24v-4zm0 8H0v4h24v-4z'/></svg>",
     'themeSystem': "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10V2zm0-2C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0z'/></svg>",
@@ -98,17 +98,17 @@ function NavMenu( schema ) {
 
     this._navElem = document.querySelector( 'nav' );
 
-    var fragment = document.createDocumentFragment();
+    const fragment = document.createDocumentFragment();
 
-    if ( schema.hasOwnProperty( 'headerHTML' ) ) {
+    if ( schema.headerHTML ) {
 
         this._navElem.innerHTML = schema.headerHTML;
 
     }
 
-    if ( schema.hasOwnProperty( 'header' ) ) {
+    if ( schema.header ) {
 
-        var headerElem = document.createElement( 'A' );
+        const headerElem = document.createElement( 'A' );
         headerElem.setAttribute( 'href', '/' );
         headerElem.classList.add( 'unitLogo' );
         this._navElem.appendChild( headerElem );
@@ -117,7 +117,7 @@ function NavMenu( schema ) {
         this._logoImageElem.src = schema.header.logo;
         headerElem.appendChild( this._logoImageElem );
 
-        var logoTextBlockElem = document.createElement( 'DIV' );
+        const logoTextBlockElem = document.createElement( 'DIV' );
         logoTextBlockElem.classList.add( 'block' );
         headerElem.appendChild( logoTextBlockElem );
 
@@ -125,9 +125,9 @@ function NavMenu( schema ) {
         this._logoTitleElem.textContent = schema.header.title;
         logoTextBlockElem.appendChild( this._logoTitleElem );
 
-        if ( schema.header.hasOwnProperty( 'subtitle' ) ) {
+        if ( schema.header.subtitle ) {
 
-            var logoSubtitleElem = document.createElement( 'H2' );
+            const logoSubtitleElem = document.createElement( 'H2' );
             logoSubtitleElem.textContent = schema.header.subtitle;
             logoTextBlockElem.appendChild( logoSubtitleElem );
 
@@ -135,100 +135,100 @@ function NavMenu( schema ) {
 
     }
 
-    if ( schema.hasOwnProperty( 'blocks' ) ) {
+    if ( schema.blocks ) {
 
-        var mainMenu = document.createElement( 'DIV' );
+        const mainMenu = document.createElement( 'DIV' );
         mainMenu.classList.add( 'mainMenu' );
         fragment.appendChild( mainMenu );
 
-        for ( var i = 0 ; i < schema.blocks.length ; i++ ) {
+        for ( let i = 0 ; i < schema.blocks.length ; i++ ) {
 
-            if ( schema.blocks[ i ].type === 'link' ) {
+            const block = schema.blocks[ i ];
 
-                if ( schema.blocks[ i ].hasOwnProperty( 'href' ) ) {
+            if ( block.type === 'link' ) {
 
-                    var blockElem = document.createElement( 'A' );
-                    blockElem.setAttribute( 'href', schema.blocks[ i ].href );
-                    blockElem.setAttribute( 'title', schema.blocks[ i ].text );
+                const blockElem = document.createElement( 'A' );
+
+                if ( block.href ) {
+
+                    blockElem.setAttribute( 'href', block.href );
+                    blockElem.setAttribute( 'title', block.text );
                     mainMenu.appendChild( blockElem );
 
                 }
 
-                if ( schema.blocks[ i ].hasOwnProperty( 'classes' ) ) {
+                if ( block.classes ) {
 
-                    blockElem.classList.add( schema.blocks[ i ].classes );
+                    blockElem.classList.add( block.classes );
 
                 }
 
-                var blockTextElem = document.createElement( 'DIV' );
+                const blockTextElem = document.createElement( 'DIV' );
                 blockTextElem.classList.add( 'text' );
                 blockElem.appendChild( blockTextElem );
 
-                var blockSpanElem = document.createElement( 'SPAN' );
+                const blockSpanElem = document.createElement( 'SPAN' );
                 blockSpanElem.classList.add( 'icon' );
-                blockSpanElem.innerHTML = schema.blocks[ i ].icon;
+                blockSpanElem.innerHTML = block.icon;
                 blockTextElem.appendChild( blockSpanElem );
 
-                var blockPElem = document.createElement( 'P' );
-                blockPElem.textContent = schema.blocks[ i ].text;
+                const blockPElem = document.createElement( 'P' );
+                blockPElem.textContent = block.text;
                 blockTextElem.appendChild( blockPElem );
 
-                if ( schema.blocks[ i ].hasOwnProperty( 'subtext' ) ) {
+                if ( block.subtext ) {
 
-                    var blockSubtextElem = document.createElement( 'SAMP' );
-                    blockSubtextElem.innerHTML = schema.blocks[ i ].subtext;
+                    const blockSubtextElem = document.createElement( 'SAMP' );
+                    blockSubtextElem.innerHTML = block.subtext;
                     blockElem.appendChild( blockSubtextElem );
 
                 }
 
-                if ( schema.blocks[ i ].hasOwnProperty( 'validLinks' ) && schema.blocks[ i ].validLinks.includes( window.location.pathname ) ) {
+                if ( block.validLinks && block.validLinks.includes( window.location.pathname ) ) {
 
                     blockElem.classList.add( 'active' );
 
                 }
 
-                if ( schema.blocks[ i ].hasOwnProperty( 'eventListeners' ) ) {
+                if ( block.eventListeners ) {
 
-                    for ( var q = 0 ; q < schema.blocks[ i ].eventListeners.length ; q++ ) {
+                    for ( const eventListener of block.eventListeners ) {
 
-                        blockElem.addEventListener(
-                            schema.blocks[ i ].eventListeners[ q ].type,
-                            schema.blocks[ i ].eventListeners[ q ].listener
-                        );
+                        blockElem.addEventListener( eventListener.type, eventListener.listener );
 
                     }
 
                 }
 
-                if ( schema.blocks[ i ].hasOwnProperty( 'onClick' ) ) {
+                if ( block.onClick ) {
 
-                    blockElem.addEventListener( 'click', schema.blocks[ i ].onClick );
+                    blockElem.addEventListener( 'click', block.onClick );
 
                 }
 
                 if ( i < schema.blocks.length - 1 ) {
 
-                    if ( schema.blocks[ i ].hasOwnProperty( 'trailingHr' ) === false || schema.blocks[ i ].trailingHr === true ) {
+                    if ( block.trailingHr && block.trailingHr === true ) {
 
-                        var hr = document.createElement( 'HR' );
+                        const hr = document.createElement( 'HR' );
                         mainMenu.appendChild( hr );
 
                     }
 
                 }
 
-            } else if ( schema.blocks[ i ].type === 'header' ) {
+            } else if ( block.type === 'header' ) {
 
-                var header = document.createElement( 'P' );
-                header.textContent = schema.blocks[ i ].text
-                header.classList.add( 'header' );
-                mainMenu.appendChild( header );
+                const headerElem = document.createElement( 'P' );
+                headerElem.textContent = block.text
+                headerElem.classList.add( 'header' );
+                mainMenu.appendChild( headerElem );
 
-                if ( schema.blocks[ i ].hasOwnProperty( 'classes' ) ) {
+                if ( block.classes ) {
 
-                    for ( q = 0 ; q < schema.blocks[ i ].classes.length ; q++ ) {
+                    for ( const classStr of block.classes ) {
 
-                        header.classList.add( schema.blocks[ i ].classes[ q ] );
+                        headerElem.classList.add( classStr );
 
                     }
 
@@ -240,15 +240,15 @@ function NavMenu( schema ) {
 
     }
 
-    if ( schema.hasOwnProperty( 'controls' ) ) {
+    if ( schema.controls ) {
 
-        var controlsBlock = document.createElement( 'DIV' );
+        const controlsBlock = document.createElement( 'DIV' );
         controlsBlock.classList.add( 'controls' );
         fragment.appendChild( controlsBlock );
 
-        for ( var e = 0 ; e < schema.controls.length ; e++ ) {
+        for ( const controlObj of schema.controls ) {
 
-            if ( schema.controls[ e ].type === 'toggleTheme' ) {
+            if ( controlObj.type === 'toggleTheme' ) {
 
                 this._themeToggleControl = document.createElement( 'SPAN' );
                 this._themeToggleControl.innerHTML = this._svgThemeSystem;
@@ -260,36 +260,33 @@ function NavMenu( schema ) {
 
             } else {
 
-                var controlBlock = document.createElement( 'SPAN' );
-                controlBlock.innerHTML = schema.controls[ e ].icon;
+                const controlBlock = document.createElement( 'SPAN' );
+                controlBlock.innerHTML = controlObj.icon;
                 controlsBlock.appendChild( controlBlock );
 
-                if ( schema.controls[ e ].hasOwnProperty( 'title' ) ) {
+                if ( controlObj.title ) {
 
-                    controlBlock.setAttribute( 'title', schema.controls[ e ].title );
+                    controlBlock.setAttribute( 'title', controlObj.title );
 
                 }
 
-                if ( schema.controls[ e ].hasOwnProperty( 'eventListeners' ) ) {
+                if ( controlObj.eventListeners ) {
 
-                    for ( var w = 0 ; w < schema.controls[ e ].eventListeners.length ; w++ ) {
+                    for ( const eventListener of controlObj.eventListeners ) {
 
-                        controlBlock.addEventListener(
-                            schema.controls[ e ].eventListeners[ w ].type,
-                            schema.controls[ e ].eventListeners[ w ].listener
-                        );
+                        controlBlock.addEventListener( eventListener.type, eventListener.listener );
 
                     }
 
                 }
 
-                if ( schema.controls[ e ].hasOwnProperty( 'onClick' ) ) {
+                if ( controlObj.onClick ) {
 
-                    controlBlock.addEventListener( 'click', schema.controls[ e ].onClick );
+                    controlBlock.addEventListener( 'click', controlObj.onClick );
 
                 }
 
-                if ( schema.controls[ e ].type === 'shrink' ) {
+                if ( controlObj.type === 'shrink' ) {
 
                     controlBlock.addEventListener( 'click', this.evt_click_toggleShrink.bind( this ) );
                     controlBlock.classList.add( 'shrinkControl' )
@@ -302,19 +299,19 @@ function NavMenu( schema ) {
 
     }
 
-    if ( schema.hasOwnProperty( 'legends' ) ) {
+    if ( schema.legends ) {
 
-        var legendsElem = document.createElement( 'DIV' );
+        const legendsElem = document.createElement( 'DIV' );
         legendsElem.classList.add( 'legends' );
         fragment.appendChild( legendsElem );
 
-        for ( var r = 0 ; r < schema.legends.length ; r++ ) {
+        for ( const legendObj of schema.legends ) {
 
-            var legendElem = document.createElement( 'A' );
-            legendElem.setAttribute( 'href', schema.legends[ r ].url );
+            const legendElem = document.createElement( 'A' );
+            legendElem.setAttribute( 'href', legendObj.url );
             legendElem.setAttribute( 'target', '_blank' );
             legendElem.setAttribute( 'rel', 'noreferrer' );
-            legendElem.textContent = schema.legends[ r ].text;
+            legendElem.textContent = legendObj.text;
             legendsElem.appendChild( legendElem );
 
         }
@@ -323,25 +320,25 @@ function NavMenu( schema ) {
 
     this._navElem.appendChild( fragment );
 
-    if ( schema.hasOwnProperty( 'mobile' ) ) {
+    if ( schema.mobile ) {
 
-        var fragmentMobile      = document.createDocumentFragment();
+        const fragmentMobile = document.createDocumentFragment();
 
-        if ( schema.mobile.hasOwnProperty( 'icon' ) ) {
+        if ( schema.mobile.icon ) {
 
             this._hamburgerIconSrc = schema.mobile.icon;
 
         }
 
-        var mobileMenuBar = document.createElement( 'DIV' );
+        const mobileMenuBar = document.createElement( 'DIV' );
         mobileMenuBar.classList.add( 'mobileBar' );
         fragmentMobile.appendChild( mobileMenuBar );
 
-        var menuShowButton = document.createElement( 'BUTTON' );
+        const menuShowButton = document.createElement( 'BUTTON' );
         
-        for ( var e = 0 ; e < schema.mobile.classes.length ; e++ ) {
+        for ( const mobileClass of schema.mobile.classes ) {
 
-            menuShowButton.classList.add( schema.mobile.classes[ e ] );
+            menuShowButton.classList.add( mobileClass );
 
         }
 
@@ -349,27 +346,27 @@ function NavMenu( schema ) {
 
         menuShowButton.addEventListener( 'click', this.evt_click_mobileButton.bind( this ) );
 
-        var menuShowButtonSpan = document.createElement( 'SPAN' );
+        const menuShowButtonSpan = document.createElement( 'SPAN' );
         menuShowButtonSpan.innerHTML = this._hamburgerIconSrc;
         menuShowButton.appendChild( menuShowButtonSpan );
 
-        for ( var r = 0 ; r < schema.blocks.length ; r++ ) {
+        for ( const block of schema.blocks ) {
 
-            if ( schema.blocks[ r ].hasOwnProperty( 'mobile' ) ) {
+            if ( block.mobile ) {
 
-                var buttonElem = document.createElement( 'A' );
-                buttonElem.setAttribute( 'href', schema.blocks[ r ].href );
+                const buttonElem = document.createElement( 'A' );
+                buttonElem.setAttribute( 'href', block.href );
                 mobileMenuBar.appendChild( buttonElem );
 
-                var spanElem = document.createElement( 'SPAN' );
-                spanElem.innerHTML = schema.blocks[ r ].icon;
+                const spanElem = document.createElement( 'SPAN' );
+                spanElem.innerHTML = block.icon;
                 buttonElem.appendChild( spanElem );
 
-                var pElem = document.createElement( 'P' );
-                pElem.innerHTML = schema.blocks[ r ].mobile;
+                const pElem = document.createElement( 'P' );
+                pElem.innerHTML = block.mobile;
                 buttonElem.appendChild( pElem );
 
-                if ( schema.blocks[ r ].hasOwnProperty( 'validLinks' ) && schema.blocks[ r ].validLinks.includes( window.location.pathname ) ) {
+                if ( block.validLinks && block.validLinks.includes( window.location.pathname ) ) {
 
                     buttonElem.classList.add( 'active' );
 
@@ -408,7 +405,7 @@ NavMenu.prototype.setHeaderTitle = function( title ) {
 
 NavMenu.prototype._preloadTheme = function() {
 
-    var navmenu_theme = localStorage.getItem( 'navmenu_theme' );
+    const navmenu_theme = localStorage.getItem( 'navmenu_theme' );
 
     if ( navmenu_theme === null ) {
 
@@ -545,8 +542,8 @@ NavMenu.prototype._clbk_toggleMobileNav = function() {
 
 
 
-var navmenu_theme = localStorage.getItem( 'navmenu_theme' );
-var shrinkedState = localStorage.getItem( 'shrinked' );
+const navmenu_theme = localStorage.getItem( 'navmenu_theme' );
+const shrinkedState = localStorage.getItem( 'shrinked' );
 
 window.addEventListener( 'DOMContentLoaded', function(){
 
@@ -558,7 +555,7 @@ window.addEventListener( 'DOMContentLoaded', function(){
 
     if ( shrinkedState === 'true' ) {
 
-        this.document.body.classList.add( 'shrinked' );
+        document.body.classList.add( 'shrinked' );
 
     }
 
