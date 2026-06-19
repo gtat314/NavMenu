@@ -452,59 +452,38 @@ NavMenu.prototype.evt_click_mobileButton = function( evt ) {
 
 NavMenu.prototype.evt_click_toggleDarkMode = function() {
 
+    let newTheme = 'system';
+
     if ( document.body.classList.contains( 'darkMode' ) ) {
 
-        document.body.classList.remove( 'lightMode' );
-        document.body.classList.remove( 'darkMode' );
-        document.body.classList.add( 'lightMode' );
-
+        document.body.classList.replace( 'darkMode', 'lightMode' );
         localStorage.setItem( 'navmenu_theme', 'lightMode' );
-
-        if ( window.frames[ 0 ] ) {
-
-            window.frames[ 0 ].document.body.classList.remove( 'lightMode' );
-            window.frames[ 0 ].document.body.classList.remove( 'darkMode' );
-            window.frames[ 0 ].document.body.classList.add( 'lightMode' );
-    
-        }
-
         this._themeToggleControl.innerHTML = this._svgThemeLight;
+        newTheme = 'lightMode';
 
     } else if ( document.body.classList.contains( 'lightMode' ) ) {
 
         document.body.classList.remove( 'lightMode' );
-        document.body.classList.remove( 'darkMode' );
-
         localStorage.removeItem( 'navmenu_theme' );
-
-        if ( window.frames[ 0 ] ) {
-
-            window.frames[ 0 ].document.body.classList.remove( 'lightMode' );
-            window.frames[ 0 ].document.body.classList.remove( 'darkMode' );
-    
-        }
-
         this._themeToggleControl.innerHTML = this._svgThemeSystem;
+        newTheme = 'system';
 
     } else {
 
-        document.body.classList.remove( 'lightMode' );
-        document.body.classList.remove( 'darkMode' );
         document.body.classList.add( 'darkMode' );
-
         localStorage.setItem( 'navmenu_theme', 'darkMode' );
-
-        if ( window.frames[ 0 ] ) {
-
-            window.frames[ 0 ].document.body.classList.remove( 'lightMode' );
-            window.frames[ 0 ].document.body.classList.remove( 'darkMode' );
-            window.frames[ 0 ].document.body.classList.add( 'darkMode' );
-    
-        }
-
         this._themeToggleControl.innerHTML = this._svgThemeDark;
+        newTheme = 'darkMode';
 
     }
+
+    const themeChangeEvent = new CustomEvent( 'navMenu:themeToggled', {
+        detail: {
+            theme: newTheme
+        }
+    });
+
+    window.dispatchEvent( themeChangeEvent );
 
     document.querySelector( 'nav' ).classList.remove( 'active' );
 
@@ -564,5 +543,52 @@ window.addEventListener( 'DOMContentLoaded', function(){
         document.body.style.transition = 'background-color 0.15s ease 0s, padding-left 0.15s ease 0s';
     
     }, 1500 );
+
+});
+
+window.addEventListener( 'navMenu:themeToggled', function( event ) {
+
+    const newTheme = event.detail.theme;
+
+    document.body.classList.remove( 'lightMode', 'darkMode' );
+
+    if ( newTheme !== 'system' ) {
+        
+        document.body.classList.add( newTheme );
+
+    }
+
+    if ( window.frames.length > 0 ) {
+
+        for ( let f = 0; f < window.frames.length; f++ ) {
+
+            try {
+
+                const iframe = window.frames[ f ];
+
+                if ( iframe.document ) {
+            
+                    const frameBody = iframe.document.body;
+                    
+                    frameBody.classList.remove( 'lightMode', 'darkMode' );
+                    
+                    if ( newTheme !== 'system' ) {
+
+                        frameBody.classList.add( newTheme );
+
+                    }
+
+                }
+
+            } catch( err ) {
+
+                // The iframe is cross-origin. The browser blocked access.
+                // We quietly swallow the error and continue.
+
+            }
+
+        }
+
+    }
 
 });
