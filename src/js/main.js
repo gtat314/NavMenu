@@ -94,6 +94,16 @@ function NavMenu( schema ) {
      */
     this._logoTitleElem = null;
 
+    /**
+     * @private
+     */
+    this._mobileBarElem = null;
+
+    /**
+     * @private
+     */
+    this._mobileBarIconElem = null;
+
 
 
     this._navElem = document.querySelector( 'nav' );
@@ -330,9 +340,9 @@ function NavMenu( schema ) {
 
         }
 
-        const mobileMenuBar = document.createElement( 'DIV' );
-        mobileMenuBar.classList.add( 'mobileBar' );
-        fragmentMobile.appendChild( mobileMenuBar );
+        this._mobileBarElem = document.createElement( 'DIV' );
+        this._mobileBarElem.classList.add( 'mobileBar' );
+        fragmentMobile.appendChild( this._mobileBarElem );
 
         const menuShowButton = document.createElement( 'BUTTON' );
         
@@ -342,13 +352,13 @@ function NavMenu( schema ) {
 
         }
 
-        mobileMenuBar.appendChild( menuShowButton );
+        this._mobileBarElem.appendChild( menuShowButton );
 
         menuShowButton.addEventListener( 'click', this.evt_click_mobileButton.bind( this ) );
 
-        const menuShowButtonSpan = document.createElement( 'SPAN' );
-        menuShowButtonSpan.innerHTML = this._hamburgerIconSrc;
-        menuShowButton.appendChild( menuShowButtonSpan );
+        this._mobileBarIconElem = document.createElement( 'SPAN' );
+        this._mobileBarIconElem.innerHTML = this._hamburgerIconSrc;
+        menuShowButton.appendChild( this._mobileBarIconElem );
 
         for ( const block of schema.blocks ) {
 
@@ -356,7 +366,7 @@ function NavMenu( schema ) {
 
                 const buttonElem = document.createElement( 'A' );
                 buttonElem.setAttribute( 'href', block.href );
-                mobileMenuBar.appendChild( buttonElem );
+                this._mobileBarElem.appendChild( buttonElem );
 
                 const spanElem = document.createElement( 'SPAN' );
                 spanElem.innerHTML = block.icon;
@@ -485,7 +495,7 @@ NavMenu.prototype.evt_click_toggleDarkMode = function() {
 
     window.dispatchEvent( themeChangeEvent );
 
-    document.querySelector( 'nav' ).classList.remove( 'active' );
+    this._navElem.classList.remove( 'active' );
 
     this._clbk_toggleMobileNav();
 
@@ -504,15 +514,20 @@ NavMenu.prototype._clbk_toggleMobileNav = function() {
 
     this._navElem.classList.toggle( 'visible' );
 
-    document.querySelector( '.mobileBar' ).classList.toggle( 'active' );
+    // Check if the mobile bar was created before trying to manipulate it
+    if ( this._mobileBarElem !== null ) {
+        
+        this._mobileBarElem.classList.toggle( 'active' );
 
-    if ( document.querySelector( '.mobileBar' ).classList.contains( 'active' ) ) {
+        if ( this._mobileBarElem.classList.contains( 'active' ) ) {
 
-        document.querySelector( '.mobileBar button span' ).innerHTML = this._mobileHideIconSrc;
+            this._mobileBarIconElem.innerHTML = this._mobileHideIconSrc;
 
-    } else {
+        } else {
 
-        document.querySelector( '.mobileBar button span' ).innerHTML = this._hamburgerIconSrc;
+            this._mobileBarIconElem.innerHTML = this._hamburgerIconSrc;
+
+        }
 
     }
 
