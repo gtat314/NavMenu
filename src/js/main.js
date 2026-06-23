@@ -26,17 +26,11 @@ const NavMenuIcons = {
  * @param {HTMLSourceElement}       [schema.blocks[].subtext]
  * @param {Array}                   [schema.blocks[].validLinks]
  * @param {Function}                [schema.blocks[].onClick]
- * @param {Object[]}                [schema.blocks[].eventListeners]
- * @param {String}                   schema.blocks[].eventListeners[].type
- * @param {Function}                 schema.blocks[].eventListeners[].listener
  * @param {Object[]}                [schema.controls]
  * @param {SVGElement}               schema.controls[].icon
  * @param {'logout'|'toggleTheme'}   schema.controls[].type
  * @param {String}                  [schema.controls[].title]
  * @param {Function}                [schema.controls[].onClick]
- * @param {Object[]}                [schema.controls[].eventListeners]
- * @param {String}                   schema.controls[].eventListeners[].type
- * @param {Function}                 schema.controls[].eventListeners[].listener
  * @param {Object[]}                [schema.legends]
  * @param {URL}                      schema.legends[].url
  * @param {String}                   schema.legends[].text
@@ -108,287 +102,7 @@ function NavMenu( schema ) {
 
     this._navElem = document.querySelector( 'nav' );
 
-    const fragment = document.createDocumentFragment();
-
-    if ( schema.headerHTML ) {
-
-        this._navElem.innerHTML = schema.headerHTML;
-
-    }
-
-    if ( schema.header ) {
-
-        const headerElem = document.createElement( 'A' );
-        headerElem.setAttribute( 'href', '/' );
-        headerElem.classList.add( 'unitLogo' );
-        this._navElem.appendChild( headerElem );
-
-        this._logoImageElem = document.createElement( 'IMG' );
-        this._logoImageElem.src = schema.header.logo;
-        headerElem.appendChild( this._logoImageElem );
-
-        const logoTextBlockElem = document.createElement( 'DIV' );
-        logoTextBlockElem.classList.add( 'block' );
-        headerElem.appendChild( logoTextBlockElem );
-
-        this._logoTitleElem = document.createElement( 'H1' );
-        this._logoTitleElem.textContent = schema.header.title;
-        logoTextBlockElem.appendChild( this._logoTitleElem );
-
-        if ( schema.header.subtitle ) {
-
-            const logoSubtitleElem = document.createElement( 'H2' );
-            logoSubtitleElem.textContent = schema.header.subtitle;
-            logoTextBlockElem.appendChild( logoSubtitleElem );
-
-        }
-
-    }
-
-    if ( schema.blocks ) {
-
-        const mainMenu = document.createElement( 'DIV' );
-        mainMenu.classList.add( 'mainMenu' );
-        fragment.appendChild( mainMenu );
-
-        for ( let i = 0 ; i < schema.blocks.length ; i++ ) {
-
-            const block = schema.blocks[ i ];
-
-            if ( block.type === 'link' ) {
-
-                const blockElem = document.createElement( 'A' );
-
-                if ( block.href ) {
-
-                    blockElem.setAttribute( 'href', block.href );
-                    blockElem.setAttribute( 'title', block.text );
-                    mainMenu.appendChild( blockElem );
-
-                }
-
-                if ( block.classes ) {
-
-                    blockElem.classList.add( block.classes );
-
-                }
-
-                const blockTextElem = document.createElement( 'DIV' );
-                blockTextElem.classList.add( 'text' );
-                blockElem.appendChild( blockTextElem );
-
-                const blockSpanElem = document.createElement( 'SPAN' );
-                blockSpanElem.classList.add( 'icon' );
-                blockSpanElem.innerHTML = block.icon;
-                blockTextElem.appendChild( blockSpanElem );
-
-                const blockPElem = document.createElement( 'P' );
-                blockPElem.textContent = block.text;
-                blockTextElem.appendChild( blockPElem );
-
-                if ( block.subtext ) {
-
-                    const blockSubtextElem = document.createElement( 'SAMP' );
-                    blockSubtextElem.innerHTML = block.subtext;
-                    blockElem.appendChild( blockSubtextElem );
-
-                }
-
-                if ( block.validLinks && block.validLinks.includes( window.location.pathname ) ) {
-
-                    blockElem.classList.add( 'active' );
-
-                }
-
-                if ( block.eventListeners ) {
-
-                    for ( const eventListener of block.eventListeners ) {
-
-                        blockElem.addEventListener( eventListener.type, eventListener.listener );
-
-                    }
-
-                }
-
-                if ( block.onClick ) {
-
-                    blockElem.addEventListener( 'click', block.onClick );
-
-                }
-
-                if ( i < schema.blocks.length - 1 ) {
-
-                    if ( block.trailingHr && block.trailingHr === true ) {
-
-                        const hr = document.createElement( 'HR' );
-                        mainMenu.appendChild( hr );
-
-                    }
-
-                }
-
-            } else if ( block.type === 'header' ) {
-
-                const headerElem = document.createElement( 'P' );
-                headerElem.textContent = block.text
-                headerElem.classList.add( 'header' );
-                mainMenu.appendChild( headerElem );
-
-                if ( block.classes ) {
-
-                    for ( const classStr of block.classes ) {
-
-                        headerElem.classList.add( classStr );
-
-                    }
-
-                }
-
-            }
-
-        }
-
-    }
-
-    if ( schema.controls ) {
-
-        const controlsBlock = document.createElement( 'DIV' );
-        controlsBlock.classList.add( 'controls' );
-        fragment.appendChild( controlsBlock );
-
-        for ( const controlObj of schema.controls ) {
-
-            if ( controlObj.type === 'toggleTheme' ) {
-
-                this._themeToggleControl = document.createElement( 'SPAN' );
-                this._themeToggleControl.innerHTML = this._svgThemeSystem;
-                controlsBlock.appendChild( this._themeToggleControl );
-
-                this._themeToggleControl.addEventListener( 'click', this.evt_click_toggleDarkMode.bind( this ) );
-
-                this._preloadTheme();
-
-            } else {
-
-                const controlBlock = document.createElement( 'SPAN' );
-                controlBlock.innerHTML = controlObj.icon;
-                controlsBlock.appendChild( controlBlock );
-
-                if ( controlObj.title ) {
-
-                    controlBlock.setAttribute( 'title', controlObj.title );
-
-                }
-
-                if ( controlObj.eventListeners ) {
-
-                    for ( const eventListener of controlObj.eventListeners ) {
-
-                        controlBlock.addEventListener( eventListener.type, eventListener.listener );
-
-                    }
-
-                }
-
-                if ( controlObj.onClick ) {
-
-                    controlBlock.addEventListener( 'click', controlObj.onClick );
-
-                }
-
-                if ( controlObj.type === 'shrink' ) {
-
-                    controlBlock.addEventListener( 'click', this.evt_click_toggleShrink.bind( this ) );
-                    controlBlock.classList.add( 'shrinkControl' )
-
-                }
-
-            }
-
-        }
-
-    }
-
-    if ( schema.legends ) {
-
-        const legendsElem = document.createElement( 'DIV' );
-        legendsElem.classList.add( 'legends' );
-        fragment.appendChild( legendsElem );
-
-        for ( const legendObj of schema.legends ) {
-
-            const legendElem = document.createElement( 'A' );
-            legendElem.setAttribute( 'href', legendObj.url );
-            legendElem.setAttribute( 'target', '_blank' );
-            legendElem.setAttribute( 'rel', 'noreferrer' );
-            legendElem.textContent = legendObj.text;
-            legendsElem.appendChild( legendElem );
-
-        }
-
-    }
-
-    this._navElem.appendChild( fragment );
-
-    if ( schema.mobile ) {
-
-        const fragmentMobile = document.createDocumentFragment();
-
-        if ( schema.mobile.icon ) {
-
-            this._hamburgerIconSrc = schema.mobile.icon;
-
-        }
-
-        this._mobileBarElem = document.createElement( 'DIV' );
-        this._mobileBarElem.classList.add( 'mobileBar' );
-        fragmentMobile.appendChild( this._mobileBarElem );
-
-        const menuShowButton = document.createElement( 'BUTTON' );
-        
-        for ( const mobileClass of schema.mobile.classes ) {
-
-            menuShowButton.classList.add( mobileClass );
-
-        }
-
-        this._mobileBarElem.appendChild( menuShowButton );
-
-        menuShowButton.addEventListener( 'click', this.evt_click_mobileButton.bind( this ) );
-
-        this._mobileBarIconElem = document.createElement( 'SPAN' );
-        this._mobileBarIconElem.innerHTML = this._hamburgerIconSrc;
-        menuShowButton.appendChild( this._mobileBarIconElem );
-
-        for ( const block of schema.blocks ) {
-
-            if ( block.mobile ) {
-
-                const buttonElem = document.createElement( 'A' );
-                buttonElem.setAttribute( 'href', block.href );
-                this._mobileBarElem.appendChild( buttonElem );
-
-                const spanElem = document.createElement( 'SPAN' );
-                spanElem.innerHTML = block.icon;
-                buttonElem.appendChild( spanElem );
-
-                const pElem = document.createElement( 'P' );
-                pElem.innerHTML = block.mobile;
-                buttonElem.appendChild( pElem );
-
-                if ( block.validLinks && block.validLinks.includes( window.location.pathname ) ) {
-
-                    buttonElem.classList.add( 'active' );
-
-                }
-
-            }
-
-        }
-
-        document.body.appendChild( fragmentMobile );
-
-    }
+    this._render( schema );
 
 };
 
@@ -401,9 +115,6 @@ NavMenu.prototype.setHeaderLogo = function( imageUrl ) {
 
 };
 
-
-
-
 NavMenu.prototype.setHeaderTitle = function( title ) {
 
     this._logoTitleElem.textContent = title;
@@ -412,6 +123,28 @@ NavMenu.prototype.setHeaderTitle = function( title ) {
 
 
 
+
+/**
+ * Safely parses an HTML string into DOM nodes to prevent XSS.
+ * @private
+ * @param {String} htmlString 
+ * @returns {DocumentFragment}
+ */
+NavMenu.prototype._parseHTML = function( htmlString ) {
+
+    const parser    = new DOMParser();
+    const doc       = parser.parseFromString( htmlString, 'text/html' );
+    const fragment  = document.createDocumentFragment();
+    
+    while ( doc.body.firstChild ) {
+
+        fragment.appendChild( doc.body.firstChild );
+
+    }
+    
+    return fragment;
+
+};
 
 NavMenu.prototype._preloadTheme = function() {
 
@@ -423,20 +156,19 @@ NavMenu.prototype._preloadTheme = function() {
 
     }
 
+    this._themeToggleControl.innerHTML = '';
+
     if ( navmenu_theme === 'darkMode' ) {
 
-        this._themeToggleControl.innerHTML = this._svgThemeDark;
+        this._themeToggleControl.appendChild( this._parseHTML( this._svgThemeDark ) );
 
     } else if ( navmenu_theme === 'lightMode' ) {
 
-        this._themeToggleControl.innerHTML = this._svgThemeLight;
+        this._themeToggleControl.appendChild( this._parseHTML( this._svgThemeLight ) );
 
     }
 
 };
-
-
-
 
 NavMenu.prototype.evt_click_toggleShrink = function( evt ) {
 
@@ -446,9 +178,6 @@ NavMenu.prototype.evt_click_toggleShrink = function( evt ) {
 
 };
 
-
-
-
 NavMenu.prototype.evt_click_mobileButton = function( evt ) {
 
     evt.preventDefault();
@@ -456,9 +185,6 @@ NavMenu.prototype.evt_click_mobileButton = function( evt ) {
     this._clbk_toggleMobileNav();
 
 };
-
-
-
 
 NavMenu.prototype.evt_click_toggleDarkMode = function() {
 
@@ -468,22 +194,35 @@ NavMenu.prototype.evt_click_toggleDarkMode = function() {
 
         document.body.classList.replace( 'darkMode', 'lightMode' );
         localStorage.setItem( 'navmenu_theme', 'lightMode' );
-        this._themeToggleControl.innerHTML = this._svgThemeLight;
         newTheme = 'lightMode';
 
     } else if ( document.body.classList.contains( 'lightMode' ) ) {
 
         document.body.classList.remove( 'lightMode' );
         localStorage.removeItem( 'navmenu_theme' );
-        this._themeToggleControl.innerHTML = this._svgThemeSystem;
         newTheme = 'system';
 
     } else {
 
         document.body.classList.add( 'darkMode' );
         localStorage.setItem( 'navmenu_theme', 'darkMode' );
-        this._themeToggleControl.innerHTML = this._svgThemeDark;
         newTheme = 'darkMode';
+
+    }
+
+    this._themeToggleControl.innerHTML = '';
+
+    if ( newTheme === 'lightMode' ) {
+
+        this._themeToggleControl.appendChild( this._parseHTML( this._svgThemeLight ) );
+
+    } else if ( newTheme === 'darkMode' ) {
+
+        this._themeToggleControl.appendChild( this._parseHTML( this._svgThemeDark ) );
+
+    } else {
+
+        this._themeToggleControl.appendChild( this._parseHTML( this._svgThemeSystem ) );
 
     }
 
@@ -501,9 +240,6 @@ NavMenu.prototype.evt_click_toggleDarkMode = function() {
 
 }
 
-
-
-
 NavMenu.prototype._clbk_toggleMobileNav = function() {
 
     if ( window.innerWidth > 1200 ) {
@@ -519,17 +255,371 @@ NavMenu.prototype._clbk_toggleMobileNav = function() {
         
         this._mobileBarElem.classList.toggle( 'active' );
 
+        this._mobileBarIconElem.innerHTML = '';
+
         if ( this._mobileBarElem.classList.contains( 'active' ) ) {
 
-            this._mobileBarIconElem.innerHTML = this._mobileHideIconSrc;
+            this._mobileBarIconElem.appendChild( this._parseHTML( this._mobileHideIconSrc ) );
 
         } else {
 
-            this._mobileBarIconElem.innerHTML = this._hamburgerIconSrc;
+            this._mobileBarIconElem.appendChild( this._parseHTML( this._hamburgerIconSrc ) );
 
         }
 
     }
+
+};
+
+NavMenu.prototype._render = function( schema ) {
+
+    const fragment = document.createDocumentFragment();
+
+    if ( schema.headerHTML ) {
+
+        this._navElem.appendChild( this._parseHTML( schema.headerHTML ) );
+
+    }
+
+    if ( schema.header ) {
+
+        this._renderHeader( schema.header, fragment );
+
+    }
+
+    if ( schema.blocks ) {
+
+        this._renderBlocks( schema.blocks, fragment );
+
+    }
+
+    if ( schema.controls ) {
+
+        this._renderControls( schema.controls, fragment );
+
+    }
+
+    if ( schema.legends ) {
+
+        this._renderLegends( schema.legends, fragment );
+
+    }
+
+    this._navElem.appendChild( fragment );
+
+    if ( schema.mobile ) {
+
+        this._renderMobile( schema );
+
+    }
+
+};
+
+/**
+ * @method
+ * @private
+ * @param {Object} header
+ * @param {String} header.logo
+ * @param {String} header.title
+ * @param {String} [header.subtitle]
+ * @param {DocumentFragment} fragment
+ * @returns {void}
+ */
+NavMenu.prototype._renderHeader = function( header, fragment ) {
+
+    const headerElem = document.createElement( 'A' );
+    headerElem.setAttribute( 'href', '/' );
+    headerElem.classList.add( 'unitLogo' );
+    fragment.appendChild( headerElem );
+
+    this._logoImageElem = document.createElement( 'IMG' );
+    this._logoImageElem.src = header.logo;
+    headerElem.appendChild( this._logoImageElem );
+
+    const logoTextBlockElem = document.createElement( 'DIV' );
+    logoTextBlockElem.classList.add( 'block' );
+    headerElem.appendChild( logoTextBlockElem );
+
+    this._logoTitleElem = document.createElement( 'H1' );
+    this._logoTitleElem.textContent = header.title;
+    logoTextBlockElem.appendChild( this._logoTitleElem );
+
+    if ( header.subtitle ) {
+
+        const logoSubtitleElem = document.createElement( 'H2' );
+        logoSubtitleElem.textContent = header.subtitle;
+        logoTextBlockElem.appendChild( logoSubtitleElem );
+
+    }
+
+};
+
+/**
+ * @method
+ * @private
+ * @param {Object[]} blocks
+ * @param {'link'|'header'} blocks[].type
+ * @param {HTMLSourceElement} blocks[].icon
+ * @param {String} blocks[].text
+ * @param {String} [blocks[].href]
+ * @param {String} [blocks[].title]
+ * @param {HTMLSourceElement} [blocks[].subtext]
+ * @param {CallableFunction} [blocks[].onClick]
+ * @param {Boolean} [blocks[].trailingHr]
+ * @param {String[]} [blocks[].classes]
+ * @param {String[]} [blocks[].validLinks]
+ * @param {DocumentFragment} fragment
+ */
+NavMenu.prototype._renderBlocks = function( blocks, fragment ) {
+
+    const mainMenu = document.createElement( 'DIV' );
+    mainMenu.classList.add( 'mainMenu' );
+    fragment.appendChild( mainMenu );
+
+    for ( let i = 0 ; i < blocks.length ; i++ ) {
+
+        const block = blocks[ i ];
+
+        if ( block.type === 'link' ) {
+
+            const blockElem = document.createElement( 'A' );
+
+            if ( block.href ) {
+
+                blockElem.setAttribute( 'href', block.href );
+                blockElem.setAttribute( 'title', block.text );
+                mainMenu.appendChild( blockElem );
+
+            }
+
+            if ( block.classes ) {
+                
+                for ( const classStr of block.classes ) {
+
+                    blockElem.classList.add( classStr );
+
+                }
+
+            }
+
+            const blockTextElem = document.createElement( 'DIV' );
+            blockTextElem.classList.add( 'text' );
+            blockElem.appendChild( blockTextElem );
+
+            const blockSpanElem = document.createElement( 'SPAN' );
+            blockSpanElem.classList.add( 'icon' );
+            blockSpanElem.appendChild( this._parseHTML( block.icon ) );
+            blockTextElem.appendChild( blockSpanElem );
+
+            const blockPElem = document.createElement( 'P' );
+            blockPElem.textContent = block.text;
+            blockTextElem.appendChild( blockPElem );
+
+            if ( block.subtext ) {
+
+                const blockSubtextElem = document.createElement( 'SAMP' );
+                blockSubtextElem.appendChild( this._parseHTML( block.subtext ) );
+                blockElem.appendChild( blockSubtextElem );
+
+            }
+
+            if ( block.validLinks && block.validLinks.includes( window.location.pathname ) ) {
+
+                blockElem.classList.add( 'active' );
+
+            }
+
+            if ( block.onClick ) {
+
+                blockElem.addEventListener( 'click', block.onClick );
+
+            }
+
+            if ( i < blocks.length - 1 ) {
+
+                if ( block.trailingHr && block.trailingHr === true ) {
+
+                    const hr = document.createElement( 'HR' );
+                    mainMenu.appendChild( hr );
+
+                }
+
+            }
+
+        } else if ( block.type === 'header' ) {
+
+            const headerElem = document.createElement( 'P' );
+            headerElem.textContent = block.text
+            headerElem.classList.add( 'header' );
+            mainMenu.appendChild( headerElem );
+
+            if ( block.classes ) {
+
+                for ( const classStr of block.classes ) {
+
+                    headerElem.classList.add( classStr );
+
+                }
+
+            }
+
+        }
+
+    }
+
+};
+
+/**
+ * @method
+ * @private
+ * @param {Object[]} controls
+ * @param {'toggleTheme'|'shrink'|String} controls[].type
+ * @param {SVGElement} [controls[].icon]
+ * @param {CallableFunction} [contols[].onClick]
+ * @param {String} [controls[].title]
+ * @param {DocumentFragment} fragment
+ * @returns {void}
+ */
+NavMenu.prototype._renderControls = function( controls, fragment ) {
+
+    const controlsBlock = document.createElement( 'DIV' );
+    controlsBlock.classList.add( 'controls' );
+    fragment.appendChild( controlsBlock );
+
+    for ( const controlObj of controls ) {
+
+        if ( controlObj.type === 'toggleTheme' ) {
+
+            this._themeToggleControl = document.createElement( 'SPAN' );
+            this._themeToggleControl.appendChild( this._parseHTML( this._svgThemeSystem ) );
+            controlsBlock.appendChild( this._themeToggleControl );
+
+            this._themeToggleControl.addEventListener( 'click', this.evt_click_toggleDarkMode.bind( this ) );
+
+            this._preloadTheme();
+
+        } else {
+
+            const controlBlock = document.createElement( 'SPAN' );
+            controlBlock.appendChild( this._parseHTML( controlObj.icon ) ); // Secured
+            controlsBlock.appendChild( controlBlock );
+
+            if ( controlObj.title ) {
+
+                controlBlock.setAttribute( 'title', controlObj.title );
+
+            }
+
+            if ( controlObj.onClick ) {
+
+                controlBlock.addEventListener( 'click', controlObj.onClick );
+
+            }
+
+            if ( controlObj.type === 'shrink' ) {
+
+                controlBlock.addEventListener( 'click', this.evt_click_toggleShrink.bind( this ) );
+                controlBlock.classList.add( 'shrinkControl' )
+
+            }
+
+        }
+
+    }
+
+};
+
+/**
+ * @method
+ * @private
+ * @param {Object[]} legends
+ * @param {String} legends[].url
+ * @param {String} legends[].text
+ * @param {DocumentFragment} fragment
+ * @returns {void}
+ */
+NavMenu.prototype._renderLegends = function( legends, fragment ) {
+
+    const legendsElem = document.createElement( 'DIV' );
+    legendsElem.classList.add( 'legends' );
+    fragment.appendChild( legendsElem );
+
+    for ( const legendObj of legends ) {
+
+        const legendElem = document.createElement( 'A' );
+        legendElem.setAttribute( 'href', legendObj.url );
+        legendElem.setAttribute( 'target', '_blank' );
+        legendElem.setAttribute( 'rel', 'noreferrer' );
+        legendElem.textContent = legendObj.text;
+        legendsElem.appendChild( legendElem );
+
+    }
+
+};
+
+/**
+ * @method
+ * @private
+ * @param {Object} schema
+ * @returns {void}
+ */
+NavMenu.prototype._renderMobile = function( schema ) {
+
+    const fragmentMobile = document.createDocumentFragment();
+
+    if ( schema.mobile.icon ) {
+
+        this._hamburgerIconSrc = schema.mobile.icon;
+
+    }
+
+    this._mobileBarElem = document.createElement( 'DIV' );
+    this._mobileBarElem.classList.add( 'mobileBar' );
+    fragmentMobile.appendChild( this._mobileBarElem );
+
+    const menuShowButton = document.createElement( 'BUTTON' );
+    
+    for ( const mobileClass of schema.mobile.classes ) {
+
+        menuShowButton.classList.add( mobileClass );
+
+    }
+
+    this._mobileBarElem.appendChild( menuShowButton );
+
+    menuShowButton.addEventListener( 'click', this.evt_click_mobileButton.bind( this ) );
+
+    this._mobileBarIconElem = document.createElement( 'SPAN' );
+    this._mobileBarIconElem.appendChild( this._parseHTML( this._hamburgerIconSrc ) ); // Secured
+    menuShowButton.appendChild( this._mobileBarIconElem );
+
+    for ( const block of schema.blocks ) {
+
+        if ( block.mobile ) {
+
+            const buttonElem = document.createElement( 'A' );
+            buttonElem.setAttribute( 'href', block.href );
+            this._mobileBarElem.appendChild( buttonElem );
+
+            const spanElem = document.createElement( 'SPAN' );
+            spanElem.appendChild( this._parseHTML( block.icon ) ); // Secured
+            buttonElem.appendChild( spanElem );
+
+            const pElem = document.createElement( 'P' );
+            pElem.appendChild( this._parseHTML( block.mobile ) ); // Secured
+            buttonElem.appendChild( pElem );
+
+            if ( block.validLinks && block.validLinks.includes( window.location.pathname ) ) {
+
+                buttonElem.classList.add( 'active' );
+
+            }
+
+        }
+
+    }
+
+    document.body.appendChild( fragmentMobile );
 
 };
 
